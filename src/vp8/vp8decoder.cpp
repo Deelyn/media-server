@@ -178,11 +178,7 @@ int VP8Decoder::DecodePacket(BYTE *in,DWORD inLen,int lost,int last)
 		//Resetamos el buffer
 		bufLen=0;
 
-		//Check it is corrupted
-		if (corrupted)
-			//Do nothing
-			return Error("-Not complete VP8 frame\n");
-
+		
 		//If got last partition
 		if (len)
 			//Decode last partition
@@ -205,13 +201,9 @@ int VP8Decoder::DecodePacket(BYTE *in,DWORD inLen,int lost,int last)
 		//Check if it is corrupted even if completed
 		if (vpx_codec_control(&decoder, VP8D_GET_FRAME_CORRUPTED, &corrupted)==VPX_CODEC_OK)
 			//Set key frame flag
-			isKeyFrame =  !(buffer[0] & 1) && !corrupted;
+			isKeyFrame =  !(buffer[0] & 1);
 
-		//Check it is corrupted
-		if (corrupted)
-			//Do nothing
-			return Error("-Corrupted VP8 frame\n");
-		
+
 		//Ger image
 		vpx_codec_iter_t iter = NULL;
 		vpx_image_t *img = vpx_codec_get_frame(&decoder, &iter);

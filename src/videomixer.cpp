@@ -821,24 +821,20 @@ int VideoMixer::EndMixer(int id)
 	//LOck the mixing
 	pthread_mutex_lock(&mixVideoMutex);
 
-	//If still mixing video
-	if (mixingVideo)
+	//For all the mosaics
+	for (Mosaics::iterator it = mosaics.begin(); it!=mosaics.end(); ++it)
 	{
-		//For all the mosaics
-		for (Mosaics::iterator it = mosaics.begin(); it!=mosaics.end(); ++it)
+		//Get mosaic
+		Mosaic *mosaic = it->second;
+		//Check if it is in mosaic
+		if (mosaic->HasParticipant(id))
 		{
-			//Get mosaic
-			Mosaic *mosaic = it->second;
-			//Check if it is in mosaic
-			if (mosaic->HasParticipant(id))
-			{
-				//Remove participant to the mosaic
-				mosaic->RemoveParticipant(id);
-				//Recalculate positions
-				mosaic->CalculatePositions();
-				//Dump positions
-				DumpMosaic(it->first,mosaic);
-			}
+			//Remove participant to the mosaic
+			mosaic->RemoveParticipant(id);
+			//Recalculate positions
+			mosaic->CalculatePositions();
+			//Dump positions
+			DumpMosaic(it->first,mosaic);
 		}
 	}
 
