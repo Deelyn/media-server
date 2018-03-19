@@ -198,10 +198,9 @@ int VP8Decoder::DecodePacket(BYTE *in,DWORD inLen,int lost,int last)
 			//Error
 			return Error("Error decoding VP8 empty [error %d:%s]\n",decoder.err,decoder.err_detail);
 
-		//Check if it is corrupted even if completed
-		if (vpx_codec_control(&decoder, VP8D_GET_FRAME_CORRUPTED, &corrupted)==VPX_CODEC_OK)
-			//Set key frame flag
-			isKeyFrame =  !(buffer[0] & 1);
+
+		//Set key frame flag
+		isKeyFrame =  !(buffer[0] & 1);
 
 
 		//Ger image
@@ -263,15 +262,8 @@ int VP8Decoder::Decode(BYTE *buffer,DWORD len)
 		//Error
 		return Error("Error decoding VP8 empty [error %d:%s]\n",decoder.err,decoder.err_detail);
 
-	//Check if it is corrupted even if completed
-	if (vpx_codec_control(&decoder, VP8D_GET_FRAME_CORRUPTED, &corrupted)==VPX_CODEC_OK)
-		//Set key frame flag
-		isKeyFrame =  !(buffer[0] & 1) && !corrupted;
+	isKeyFrame =  !(buffer[0] & 1);
 
-	//Check it is corrupted
-	if (corrupted)
-		//Do nothing
-		return Error("-Corrupted VP8 frame\n");
 		
 	//Ger image
 	vpx_codec_iter_t iter = NULL;
